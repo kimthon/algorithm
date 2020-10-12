@@ -1,0 +1,126 @@
+#include<iostream>
+
+using namespace std;
+
+class FW
+{
+	private:
+		int** box;
+		int num;
+
+		//크루스칼용
+		bool* checker;
+		int sum;
+
+		void ShortestPath(int& i, int&k)
+		{
+			int tmp;
+			for(int j = 0; j < num; j++)
+			{
+				tmp = box[i][k] + box[k][j];
+				if(tmp < box[i][j])	box[i][j] = tmp;
+			}
+		}
+
+		bool AllTrue()
+		{
+			for(int i = 0; i < num; i++)
+				if(!checker[i]) return false;
+
+			return true;
+		}
+
+		bool KruscalCheck(int& i, int& j)
+		{
+			bool isItZero = (box[i][j] == 0);
+			bool isItChecked = (checker[i] && checker[j]);
+
+			return !isItZero&&!isItChecked;
+		}
+
+		void Kruscal()
+		{
+			int min;
+			int tmp_i;
+			int tmp_j;
+
+			sum = 0;
+			while(!AllTrue())
+			{
+				min = 999;
+				tmp_i = 0;
+				tmp_j = 0;
+
+
+				for(int i = 1; i < num; i++)
+				{
+					for(int j = 0; j < num; j++)
+					{
+						if((i != j) && KruscalCheck(i, j)&& (min > box[i][j]))
+						{
+							min = box[i][j];
+							tmp_i = i;
+							tmp_j = j;
+						}
+					}
+				}
+
+				if((tmp_i == 0) && (tmp_j == 0))
+				{
+					cout << "-1";
+					return;
+				}
+				else
+				{
+					cout << "i : " << tmp_i << ", j : " << tmp_j << endl;
+					sum += box[tmp_i][tmp_j];
+					checker[tmp_i] = true;
+					checker[tmp_j] = true;
+				}
+			}
+
+			cout << sum;
+		}
+
+	public:
+		void CalShortPath()
+		{
+			for(int k = 0; k < num; k++)
+				for(int i = 0; i < num; i++)
+					if(k != i) ShortestPath(i, k);
+		}
+
+		FW(int _num):box(new int*[_num]), num(_num), checker(new bool[_num]), sum(0)
+		{
+				for(int i = 0; i < _num; i++)
+			{
+				box[i] = new int[_num];
+				for(int j = 0; j < _num; j++)
+					cin >> box[i][j];
+			}
+	
+//			CalShortPath();
+			Kruscal();
+		}
+
+		~FW()
+		{
+			for(int i = 0; i < num; i ++)
+				delete box[i];
+			delete box;
+		}
+
+};
+
+
+int main()
+{
+	int num;
+	FW* fw;
+
+	cin >> num;
+
+	fw = new FW(num);
+
+	return 0;
+}
