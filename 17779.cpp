@@ -3,7 +3,7 @@
 #include<algorithm>
 #include<cstring>
 
-#define DEBUG
+//#define DEBUG
 
 using namespace std;
 
@@ -131,8 +131,10 @@ class Solution {
 							int num = SumResult();
 							if(num < min_value) {
 								min_value = num;
+#ifdef DEBUG
 								for(int i = 0; i < size; ++ i)
 									memcpy(tmp[i], area[i], sizeof(int)*size);
+#endif
 							}
 						}
 
