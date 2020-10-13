@@ -83,13 +83,13 @@ class Solution {
 				}
 
 			// 1 <= r < x + d1, 1 <= c <= y
-			SetExtraArea(0, x + d1, 0, y, 1);
+			SetExtraArea(0, x + d1, 0, y + 1, 1);
 			// 1 <= r <= x + d2, y < c <= N
-			SetExtraArea(0, x + d2 + 1, y, size, 2);
+			SetExtraArea(0, x + d2 + 1, y + 1, size, 2);
 			// x + d1 <= r <= N, 1 <= c < y - d1 + d2
 			SetExtraArea(x + d1, size, 0, y - d1 + d2 , 3);
-			// x + d2 < r < N, y - d1, y - d1 + d2 <= c <= N
-			SetExtraArea(x + d2, size, y - d1 + d2, size, 4);
+			// x + d2 < r < N, y - d1 + d2 <= c <= N
+			SetExtraArea(x + d2 + 1, size, y - d1 + d2, size, 4);
 
 		}
 
