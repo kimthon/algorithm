@@ -3,12 +3,18 @@
 #include<algorithm>
 #include<cstring>
 
+#define DEBUG
+
 using namespace std;
 
 class Solution {
 	private:
 		int** array = NULL;
 		int** area = NULL;
+#ifdef DEBUG
+		int** tmp = NULL;
+#endif
+
 		int size = 0;
 
 		int min_value = INT_MAX;
@@ -106,6 +112,9 @@ class Solution {
 
 			InitArray(array);
 			InitArray(area);
+#ifdef DEBUG
+			InitArray(tmp);
+#endif
 
 			SetArray(array);
 		}
@@ -119,27 +128,35 @@ class Solution {
 					for(int d1 = 1; 0 <= y - d1; ++d1)
 						for(int d2 = 1; (x + d1 + d2 < size)&&(y + d2 < size); d2++) {
 							SetArea(x, y, d1, d2);
-							min_value = min(min_value, SumResult());
+							int num = SumResult();
+							if(num < min_value) {
+								min_value = num;
+								for(int i = 0; i < size; ++ i)
+									memcpy(tmp[i], area[i], sizeof(int)*size);
+							}
 						}
 
 
 		}
 		int Result() { return min_value; }
 
-		/*
+#ifdef DEBUG
 		void Print() {
 			for(int i = 0; i < size; ++i)
 			{
 				for(int j = 0; j < size; ++j)
-					cout << area[i][j] << ' ';
+					cout << tmp[i][j] << ' ';
 				cout << endl;
 			}
 		}
-		*/
+#endif
 
 		~Solution() {
 			DelArray(array);
 			DelArray(area);
+#ifdef DEBUG
+			DelArray(tmp);
+#endif
 		}
 };
 
@@ -150,5 +167,10 @@ int main() {
 	Solution s(num);
 	s.Run();
 
+#ifdef DEBUG
+	cout <<	endl;
+	s.Print();
+	cout <<	endl;
+#endif
 	cout << s.Result() << endl;
 }
