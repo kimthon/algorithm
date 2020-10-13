@@ -11,7 +11,7 @@ class Solution {
 		int** area = NULL;
 		int size = 0;
 
-		int min = INT_MAX;
+		int min_value = INT_MAX;
 
 		void InitArray(int**& array) {
 			if(array != NULL) DelArray(array);
@@ -22,7 +22,7 @@ class Solution {
 		}
 
 		int SumResult() {
-			int area_sum[5] = {0, 0, 0, 0, 0} ;
+			int area_sum[6] = {0, 0, 0, 0, 0, 0} ;
 			for(int i = 0; i < size; ++i)
 				for(int j = 0; j < size; ++j) {
 					int area_num = area[i][j];
@@ -30,8 +30,8 @@ class Solution {
 					area_sum[area_num] += human;
 				}
 
-			int min = *min_element(area_sum, area_sum + 5);
-			int max = *max_element(area_sum, area_sum + 5);
+			int min = *min_element(area_sum + 1, area_sum + 6);
+			int max = *max_element(area_sum + 1, area_sum + 6);
 
 			return (max - min);
 		}
@@ -49,13 +49,13 @@ class Solution {
 
 			//테두리 씌우기
 			for(int i = 0; i <= d1; ++i) {
-				area[x + i][y - i] = 4;
-				area[x + d2 + i][y + d2 - i] = 4;
+				area[x + i][y - i] = 5;
+				area[x + d2 + i][y + d2 - i] = 5;
 			}
 
 			for(int i = 0; i <= d2; ++i) {
-				area[x + i][y + i] = 4;
-				area[x + d1 + i][y - d1 + i] = 4;
+				area[x + i][y + i] = 5;
+				area[x + d1 + i][y - d1 + i] = 5;
 			}
 
 			//테두리 채우기
@@ -63,17 +63,27 @@ class Solution {
 				for(int j = 1; ; ++j)
 				{
 					int& tmp = area[x + i + j][y - i];
-					if(tmp == 4) break;
-					tmp = 4;
+					if(tmp == 5) break;
+					tmp = 5;
 				}
 
+			//중간은 겹치기 때문에 패스
 			for(int i = 1; i < d2; ++i)
 				for(int j = 1; ; ++j)
 				{
 					int& tmp = area[x + i + j][y + i];
-					if(tmp == 4) break;
-					tmp = 4;
+					if(tmp == 5) break;
+					tmp = 5;
 				}
+
+			// 1 <= r < x + d1, 1 <= c <= y
+			SetExtraArea(0, x + d1, 0, y, 1);
+			// 1 <= r <= x + d2, y < c <= N
+			SetExtraArea(0, x + d2 + 1, y, size, 2);
+			// x + d1 <= r <= N, 1 <= c < y - d1 + d2
+			SetExtraArea(x + d1, size, 0, y - d1 + d2 , 3);
+			// x + d2 < r < N, y - d1, y - d1 + d2 <= c <= N
+			SetExtraArea(x + d2, size, y - d1 + d2, size, 4);
 
 		}
 
@@ -83,19 +93,40 @@ class Solution {
 			delete array;
 			array = NULL;
 		}
+
+		void SetExtraArea(int x1, int x2, int y1, int y2, int num) {
+			for(int i = x1; i < x2; ++i)
+				for(int j = y1; j < y2; ++j) 
+					if(area[i][j] != 5) area[i][j] = num;
+		}
+
 	public:
 		Solution(int size) {
 			this->size = size;
 
-			//SetArray(array);
-
+			InitArray(array);
 			InitArray(area);
 
-			SetArea(1,4,3,2);
+			SetArray(array);
 		}
 
-		int Result() { return min; }
 
+		void Run() {
+			// Set 파라미터 생성
+			// 4중 for문은 문제가 있다 어떻게 수정하면 좋은가....
+			for(int x = 1; x < size - 1; ++x)
+				for(int y = 1; y < size - 1; ++y)
+					for(int d1 = 1; 0 <= y - d1; ++d1)
+						for(int d2 = 1; (x + d1 + d2 < size)&&(y + d2 < size); d2++) {
+							SetArea(x, y, d1, d2);
+							min_value = min(min_value, SumResult());
+						}
+
+
+		}
+		int Result() { return min_value; }
+
+		/*
 		void Print() {
 			for(int i = 0; i < size; ++i)
 			{
@@ -104,6 +135,12 @@ class Solution {
 				cout << endl;
 			}
 		}
+		*/
+
+		~Solution() {
+			DelArray(array);
+			DelArray(area);
+		}
 };
 
 int main() {
@@ -111,7 +148,7 @@ int main() {
 	cin >> num;
 
 	Solution s(num);
+	s.Run();
 
-	s.Print();
-	//cout << s.Result() << endl;
+	cout << s.Result() << endl;
 }
