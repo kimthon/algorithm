@@ -10,27 +10,37 @@ enum Arrow { RIGHT = 1, LEFT = 2, UP = 3, DOWN = 4};
 class Toy {
 	private:
 		pair<int, int> xy;
+		int power = 0; // how many move?
 		Arrow arrow;
 	public:
-		Toy(int x, int y, Arrow arrow) : xy(x,y), arrow(arrow) {
+		Toy(int x, int y,int power, Arrow arrow) : xy(x,y),power(power), arrow(arrow) { }
 
-		}
-
-		pair<int, int> WillMove() {
-			pair<int, int> tmp = xy;
+		void Move() {
 			switch (arrow) {
-				case Arrow.RIGHT:
-					tmp.first += 1;
+				case RIGHT:
+					xy.first += power;
 					break;
-				case Arrow.LEFT:
-					tmp.first -= 1;
+				case LEFT:
+					xy.first -= power;
 					break;
-				case Arrow.UP:
-					tmp.second -= 1;
+				case UP:
+					xy.second -= power;
 					break;
-				case Arrow.DOWN:
-					tmp.second += 1;
+				case DOWN:
+					xy.second += power;
 					break;
+			}
+
+			if(xy.first > N) {
+				xy.first = xy.first%N;
+				if(arrow == UP) arrow = DOWN;
+				else arrow = UP;
+			}
+
+			if(xy.second > N) {
+				xy.second = xy.second%N;
+				if(arrow == LEFT) arrow = RIGHT;
+				else arrow = RIGHT;
 			}
 		}
 };
