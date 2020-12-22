@@ -1,0 +1,98 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct 
+{
+	int white;
+	int black;
+}colorSet;
+
+void InitSet(colorSet* SetArray);
+void CountColor(colorSet* set, char* block);
+void CheckBlock(char** block);
+
+int size, maxRow, maxColumn;
+
+int main()
+{
+	char*** blockArray;
+	colorSet* setList;
+
+	scanf("%d", &size);
+	blockArray = (char***)malloc(sizeof(char**)*size);
+	setList = (colorSet*)malloc(sizeof(colorSet)*size);
+
+	for(int num = 0; num < size; num++)
+	{
+		scanf("%d %d", &maxRow, &maxColumn);
+		blockArray[num] = (char**)malloc(sizeof(char*)*maxRow);
+		
+		for(int row = 0; row < maxRow; row++)
+		{
+			blockArray[num][row] = (char*)malloc(sizeof(char)*(maxColumn + 1));
+			scanf("%s", blockArray[num][row]);
+			
+			CountColor(&setList[num], blockArray[num][row]);
+		}
+	}
+
+	for(int num = 0; num < size; num++)
+	{
+		if(setList[num].white != setList[num].black*2)
+		{
+			printf("NO\n");
+		}
+		else
+		{
+			CheckBlock(blockArray[num]);
+		}
+	}
+}
+
+
+void InitSet(colorSet* setArray)
+{
+	for(int i = 0; i < size; i++)
+	{
+		setArray[i].white = 0;
+		setArray[i].black = 0;
+	}
+}
+
+void CountColor(colorSet* set, char* block)
+{
+	for(int i = 0; block[i] != 0; i++)
+	{
+		if(block[i] == 'W') (*set).white++;
+		else if(block[i] == 'B') (*set).black++;
+	}
+}
+
+void CheckBlock(char** block)
+{
+	for(int row = 0; row < rowMax - 1; row++)
+	{
+		for(int col = 0; col < columnMax; col++)
+		{
+			if(block[row][col] == 'B')
+			{
+				if((block[row + 1][col] == 'W')&&(block[row][col+1] == 'W'))
+				{
+					block[row][col]='.'
+					block[row +1][col] = '.';
+					block[row][col+1] = '.';
+				}
+				else
+				{
+					printf("NO\n");
+					return;
+				}
+			}
+			else if(block[row][col] == 'W')
+			{
+
+			}
+		}
+	}
+	printf("YES\n");
+}
