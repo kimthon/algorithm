@@ -1,141 +1,93 @@
 #include<iostream>
+#include<vector>
+#include<algorithm>
 #include<queue>
 #include<stack>
 
 using namespace std;
 
-class Graph
-{
+class G {
 	private:
-		int vertexCount;
-		int lineCount;
-		int startVertex;
+		int pc; // 정점의 개수
+		int sp; // 탐색을 시작할 정점
+		vector<vector<int>> line;
 
-		bool** matrix;
-
-		void SetMatrix(int vertexCount)
-		{
-			matrix = new bool*[vertexCount];
-			for(int i = 0; i < vertexCount; i++)
-				matrix[i] = new bool[vertexCount];
-			InitMatrix(false, vertexCount);
-		}
-		
-		void InitMatrix(bool _bool, int vertexCount)
-		{
-			for(int i = 0; i < vertexCount; i++)
-				for(int j = 0; j < vertexCount; j++)
-					matrix[i][j] = _bool;
-		}
-
-		void SetFS(int& presentVertex, bool*& checker)
-		{
-			presentVertex = startVertex - 1;
-			checker = new bool[vertexCount];
-
-			for(int i = 0; i < vertexCount; i++) checker[i] = false;
-
-			checker[startVertex - 1] = true;
-			cout << presentVertex +1;
-		}
-
-		bool const AllTrue(bool* checker)
-		{
-			for(int i = 0; i < vertexCount; i++)
-				if(!checker[i]) return false;
-			return true;
-		}
-
-		bool const isLeafNode(int& i, int& vertexCount) { return (i == vertexCount); }
-		bool const isCanLining(bool& used, bool& canLine) { return (!used) && (canLine); }
 	public:
-		void DFS()
-		{
+		G(int pc, int lc, int sp):pc(pc), sp(sp - 1), line(pc, vector<int>()) {
+			int p1, p2;
+			for(int i = 0; i < lc; ++i) {
+				cin >> p1 >> p2;
+				line[p1 - 1].push_back(p2 - 1);
+				line[p2 - 1].push_back(p1 - 1);
+			}
+
+			for(int i = 0; i < pc; ++i)
+				sort(line[i].begin(), line[i].end());
+		}
+
+		void DFS() {
+			vector<bool> visited(pc, false);
+			visited[sp] = true;
+
 			stack<int> s;
+			s.push(sp);
 
-			int presentVertex;
-			bool* checker;
+			cout << sp + 1 << ' ';
+			while(!s.empty()) {
+				int p = s.top();
+				bool f = true;
 
-			SetFS(presentVertex, checker);
-			
-			while(!AllTrue(checker))
-			{
-				for(int i = 0; i <= vertexCount; i++)
-				{
-					if(isLeafNode(i, vertexCount))
-					{
-						presentVertex = s.top();
-						s.pop();
-						break;
-					}
-					else if(isCanLining(checker[i],matrix[presentVertex][i]))
-					{
-						s.push(presentVertex); 
-						
-						presentVertex = i;
-						cout << " " << presentVertex + 1;
-						checker[presentVertex] = true;
+				for(auto i = line[p].begin(); i != line[p].end(); ++i) {
+					if(!visited[*i]) {
+						cout << *i + 1 << ' ';
+						visited[*i] = true;
+						f = false;
+						s.push(*i);
 						break;
 					}
 				}
+
+				//만약 다른 정점을 모두 방문했다면
+				//정점을 스택에서 제거한다.
+				if(f) s.pop();
 			}
 			cout << endl;
 
-			delete checker;
 		}
 
-		void BFS()
-		{
+		void BFS() {
+			vector<bool> visited(pc, false);
+			visited[sp] = true;
+
 			queue<int> q;
+			q.push(sp);
 
-			int presentVertex;
-			bool* checker;
+			cout << sp + 1 << ' ';
+			while(!q.empty()) {
+				int p = q.front();
+				q.pop();
 
-			SetFS(presentVertex, checker);
-
-			while(!AllTrue(checker))
-			{
-				for(int i = 0; i < vertexCount; i++)
-				{
-					if(isCanLining(checker[i],matrix[presentVertex][i]))
-					{
-						q.push(i);
-
-						cout << " " << i + 1;
-						checker[i] = true;
+				for(auto i = line[p].begin(); i != line[p].end(); ++i) {
+					if(!visited[*i]) {
+						cout << *i + 1<< ' ';
+						visited[*i] = true;
+						q.push(*i);
 					}
 				}
-
-				if(!q.empty())
-				{
-					presentVertex = q.front();
-					q.pop();
-				}
 			}
-			delete checker;
-		}
-		
-		Graph()
-		{	
-			cin >> vertexCount >> lineCount >> startVertex;
-		
-			SetMatrix(vertexCount);
 
-			//정점을 입력받고 인접행렬을 설정한다.
-			int vertex1, vertex2;
-			for(int i = 0; i < lineCount; i++)
-			{
-				cin >> vertex1>> vertex2;
-				matrix[vertex1-1][vertex2-1] = true;
-				matrix[vertex2-1][vertex1-1] = true;
-			}
+			cout << endl;
 		}
 };
 
-int main()
-{
-	Graph graph;
+int main() {
+	int pc, sp, lc;
 
-	graph.DFS();
-	graph.BFS();
+	cin >> pc >> lc >> sp;
+	G g(pc, lc, sp);
+
+	g.DFS();
+	g.BFS();
+
+	return 0;
 }
