@@ -33,14 +33,16 @@ class G {
 			pq.push(pair<int, int>(0, sp));
 			while(!pq.empty()) {
 				int a = pq.top().second;
-				int w = pq.top().first;
+				int w = -pq.top().first;
 				pq.pop();
 
+				//이미 최단경로를 체크한 노드인 경우 패스
 				if(wtp[a] < w) continue;
 
 				for(auto i = line[a].begin(); i != line[a].end(); ++i) {
-					int b = (*i).first;
-					int pb = (*i).second;
+					int &b = (*i).first;
+					int &pb = (*i).second;
+
 					int pre = wtp[b];
 					int now = wtp[a] + pb;
 
@@ -56,14 +58,14 @@ class G {
 		void print() {
 			for(auto i = wtp.begin(); i != wtp.end(); ++i)
 				if(*i == INT_MAX) printf("INF\n");
-				else cout << *i << endl;
+				else printf("%d\n", *i);
 		}
 };
 
 int main() {
 	int pc, lc;
 
-	cin >> pc >> lc;
+	scanf("%d %d", &pc, &lc);
 
 	G g(pc, lc);
 
