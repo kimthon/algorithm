@@ -16,21 +16,16 @@ bool solution(vector<string> phone_book) {
 	unordered_multiset<string> us;
 	sort(phone_book.begin(), phone_book.end(), comp);
 	for(auto i = phone_book.begin(); i != phone_book.end(); ++i) {
-		if(size != (int)i->length()) {
+		if(size == (int)i->length()) us.erase(*i);
+		else {
 			size = i->length();
 			us.clear();
 
 			for(auto j = i + 1; j != phone_book.end(); ++j) {
 				string tmp = j->substr(0, size);
-
-				cout << tmp << ' ';
-				if(us.find(tmp) == us.end()) us.insert(tmp);
-				else return false;
+				us.insert(tmp);
 			}
-			cout << endl;
-		}else us.erase(*i);
-
-		cout << *i << endl;
+		}
 		if(us.find(*i) != us.end()) return false;
 	}
 
@@ -38,7 +33,7 @@ bool solution(vector<string> phone_book) {
 }
 
 int main() {
-	vector<string> pb = {"123", "456", "789"};
+	vector<string> pb = {"111113", "112", "12"};
 	cout << solution(pb) << endl;
 	return 0;
 }
