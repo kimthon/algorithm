@@ -12,34 +12,34 @@ vector<int> solution(vector<int> prices) {
 	stack<pair<int, int>> s;
 
 	int size = prices.size();
-	for(int i =0; i < size; ++i) {
+	for(int i = 0; i < size; ++i) {
 		int &price = prices[i];
+
 		//가격 하락시
-		if(s.top().second > price) {
-			while(s.top().second > price) {
-				auto tmp = s.top();
-				s.pop();
-				answer[tmp.first] = s.size();
-			}
-		}else { //가격 상승||같을 시
-			s.push(pair<int, int>(i, price));
+		while(!s.empty() && s.top().second > price) {
+			auto tmp = s.top();
+			s.pop();
+			answer[tmp.first] = i - tmp.first;
 		}
+
+		s.push(pair<int, int>(i, price));
 	}
 
 	// 스택에 남은 값 비워내기
 	while(!s.empty()) {
 		auto tmp = s.top();
 		s.pop();
-		answer[tmp.first] = s.size();
+		answer[tmp.first] = size - tmp.first - 1;
 	}
 
 	return answer;
 }
 
 int main() {
-	vector<int> prices = { 1, 2, 3, 2, 3 };
+	vector<int> prices = { 1, 2, 3, 2, 3};
 
-	for(int i : solution(prices)) cout << i << endl;
+	for(int i : solution(prices)) cout << i << ' ';
+	cout << endl;
 
 	return 0;
 }
