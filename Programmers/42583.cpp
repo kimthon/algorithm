@@ -11,15 +11,18 @@ int solution(int bridge_length, int weight, vector<int> truck_weights) {
 		queue<pair<int, int>> q;
 
 		for(int truck : truck_weights) {
-			//while문을 지나가지 못할 경우 시간을 올려줌
+			//트럭이 나가지 않을 경우 시간 증가
 			++time;
 
 			// 1. 새로운 트럭이 들어 갈 수 있 을 때 까지 대기
 			// 2. 다리가 꽉 차 있을 경우 대기
+			// 3. 시간이 다 지났을 경우 아웃
 			bool weight_over = (!q.empty() && sum + truck > weight);
 			bool fulled = (int)q.size() == bridge_length;
-			while(weight_over || fulled) {
-				time = bridge_length + q.front().second;
+			bool timeout = (!q.empty() && q.front().second == time);
+
+			while(weight_over || fulled || timeout) {
+				time = q.front().second;
 
 				cout << "시간 : " << time << endl;
 				cout << "트럭 : " << q.front().first << " 빠져나감(" << q.front().second << ')' << endl;
@@ -29,8 +32,10 @@ int solution(int bridge_length, int weight, vector<int> truck_weights) {
 
 				//다시 값 비교
 				//fulled는 이미 하나 이상 빠져나갔으니 false
+				//timeout은 이미 나갔으니 false;
 				weight_over = (!q.empty() && sum + truck > weight);
 				fulled = false;
+				timeout = false;
 
 				if(weight_over) cout << endl;
 			}
@@ -39,7 +44,7 @@ int solution(int bridge_length, int weight, vector<int> truck_weights) {
 			sum += truck;
 			cout << "시간 : " << time << endl;
 			cout << "트럭 : " << truck << " 추가됨" << endl;
-			q.push(pair<int,int>(truck, time));
+			q.push(pair<int,int>(truck, time + bridge_length));
 
 			cout << "총 weight : " << sum << endl << endl;
 		}
@@ -55,7 +60,7 @@ int solution(int bridge_length, int weight, vector<int> truck_weights) {
 int main() {
 	int length = 5;
 	int weight = 5;
-	vector<int> tweights = {2, 2, 2, 2, 1, 1, 1, 1};
+	vector<int> tweights = {2, 2, 2, 2, 1, 1, 1, 1, 1};
 
 	cout << solution(length, weight, tweights) << endl;
 
