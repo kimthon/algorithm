@@ -1,7 +1,10 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<algorithm>
 #include<cmath>
+#include<set>
+
 
 using namespace std;
 
@@ -29,12 +32,23 @@ bool isPrime(int num) {
 
 int solution(string numbers) {
 	int answer = 0;
+	set<int, less<int>> s;
+	
 
 	int size = numbers.size();
 	// 총 몇자리 수를 만들 것인가
+	sort(numbers.begin(), numbers.end());
 	for(int digit = size;0 < digit; --digit) {
+		vector<bool> select;
+		for(int i = 0; i < digit; ++i) select.push_back(true);
+		for(int i = 0; i < digit; ++i) select.push_back(false);
 
+		do {
+			s.insert(stoi(numbers));
+		}while(next_permutation(numbers.begin(), numbers.end()));
 	}
+
+	for(int i : s) if(isPrime(i)) ++answer;
 
 	return answer;
 }
