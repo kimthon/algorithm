@@ -2,7 +2,6 @@
 #include<string>
 #include<vector>
 #include<algorithm>
-#include<set>
 
 using namespace std;
 
@@ -11,42 +10,25 @@ using namespace std;
 int solution(vector<vector<int>> routes) {
 	int answer = 0;
 
-	auto cmp = [](const pair<int,int> &a, const pair<int,int> &b) {
-		if(a.first == b.first) return a.second > b.second;
-		return a.first < b.first;
+	auto cmp = [](const vector<int> &a, const vector<int> &b) {
+		if(a[1] == b[1]) return a[0] > b[0];
+		else return a[1] < b[1];
 	};
 
-	set<pair<int,int>, decltype(cmp)> s(cmp);
+	sort(routes.begin(), routes.end(), cmp);
 
-	//시작 지점, 끝 지점 표시
-	for(auto i : routes) {
-		s.insert({i[0], i[1]});
-		if(i[0] != i[1]) s.insert({i[1], i[0]});
-	}
-
-	while(!s.empty()) {
-		multiset<pair<int,int>> save;
-		multiset<pair<int,int>> tmp;
-
-		for(const pair<int,int> &i : s) {
-			// 시작 지점의 경우
-			if(i.first <= i.second) tmp.insert( {i.first, i.second});
-
-			//끝 지점의 경우
-			if(i.second <= i.first){
-				// 가장 큰 교차지점 저장
-				if(save.size() < tmp.size()) save = tmp;
-				tmp.erase({i.second, i.first});
-			}
-		}
-
-
-		// 카메라로 찍힌 곳 제거
+	while(!routes.empty()) {
+		int end = routes[0][1];
 		++answer;
-		for(const pair<int,int> &i : save) {
-			s.erase(i);
-			s.erase({i.second, i.first});
+		cout << "camera point (" << end << ") : ";
+		for(auto r = routes.begin(); r != routes.end();) {
+			if((*r)[0] <= end) {
+				cout << '(' << (*r)[0] << ',' << (*r)[1] << ')' << ',';
+				r = routes.erase(r);
+			}
+			else ++r;
 		}
+		cout << endl;
 	}
 
 	return answer;
