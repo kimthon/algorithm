@@ -18,15 +18,9 @@ vector<string> solution(vector<vector<string>> tickets) {
 
 	int size = tickets.size();
 	answer.push_back("ICN");
-	bool pass = false;
+	int i = 0;
 	while(!answer.empty()) {
-
-		int i;
-		// pop 이후 이어갈 경우 그 다음부터 검색하면 됨
-		// 아니라면 0부터 다시 검색
-		if(!pass) i = 0;
-
-		pass = true;
+		bool pass = true;
 		for(; i < size; ++i) {
 			if(used[i]) continue;
 			if(tickets[i][0] == answer.back()) {
@@ -37,6 +31,7 @@ vector<string> solution(vector<vector<string>> tickets) {
 				memo.push_back(i);
 				used[i] = true;
 				pass = false;
+				i = 0;
 				break;
 			}
 		}
