@@ -13,28 +13,22 @@ int solution(int distance, vector<int> rocks, int n) {
 	// 이분 탐색 기준을 최소 거리로 잡는다.
 	int start = 0;
 	int end = distance;
-	int mid = (start + end)/2;
 
 	sort(rocks.begin(), rocks.end());
+	rocks.push_back(distance);
 
-	while(start < end) {
+	int max_d = 0;
+	while(start <= end) {
+		int mid = (start + end)/2;
 		int count = 0;
 		int pre = 0;		
-		int min_d = distance;
 		int d;
 
 		for(int rock : rocks) {
 			d = rock - pre;
 			if(d < mid) ++count;
-			else {
-				pre = rock;
-				min_d = min(min_d, d);
-			}
+			else pre = rock;
 		}
-
-		// 마지막 distance는 제거할 수 없다.
-		d = distance - pre;
-		if(d >= mid) min_d = min(min_d, d);
 
 		cout << "count : " << count << endl;
 		cout << "start : " << start << endl;
@@ -42,20 +36,20 @@ int solution(int distance, vector<int> rocks, int n) {
 		cout << "mid   : " << mid << endl << endl;
 
 		// 제거해야하는 돌맹이 갯수가 조건
-		if(count == n) return min_d;
-		else if(count < n) start = mid + 1;
-		else end = mid - 1;
-
-		mid = (start + end)/2;
+		if(count > n) end = mid - 1;
+		else {
+			max_d = max(max_d, mid);
+			start = mid + 1;
+		}
 	}
 
-	return mid;
+	return max_d;
 }
 
 int main() {
-	int distance = 18;
-	vector<int> rocks = { 2, 8, 9, 10, 11, 12, 13};
-	int n = 6;
+	int distance = 16;
+	vector<int> rocks = { 4, 8, 11};
+	int n = 2;
 
 	cout << solution(distance, rocks, n) << endl;
 
